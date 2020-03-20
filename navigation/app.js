@@ -4,6 +4,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 // components
 import Welcome from "../screens/Welcome";
+import VPN from "../screens/VPN";
 
 const Stack = createStackNavigator();
 
@@ -14,6 +15,11 @@ const App = () => {
         <Stack.Screen
           name="Welcome"
           component={Welcome}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="VPN"
+          component={VPN}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
