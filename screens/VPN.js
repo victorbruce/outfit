@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { StyleSheet, Image, Modal } from "react-native";
+import { StyleSheet, Image, Modal, ScrollView } from "react-native";
 import { Block, Text, Utils, Button } from "expo-ui-kit";
 
 // constants
-import { images, servers } from "../constants/";
-const {icons} = images;
+import { images, theme, servers } from "../constants/";
+const { icons } = images;
 
-const { theme, rgba } = Utils;
+const { rgba } = Utils;
 const { SIZES, COLORS } = theme;
 
 const VPN = () => {
@@ -22,32 +22,67 @@ const VPN = () => {
     setConnected(!connected);
   };
 
+  const handleServer = server => {
+    setShow(false);
+    setServer(server);
+    setConnected(false);
+  };
+
   const renderServer = () => {
+    const connection = server || automatic;
     return (
       <Block flex={false} row center middle>
-        <Image source={images.icons.automatic} />
-        <Text margin={[0, 10]}>Automatic</Text>
-        <Image source={images.icons.dropdown} />
+        <Image source={connection.icon} />
+        <Text margin={[0, 10]}>{connection.name}</Text>
+        <Image source={icons.dropdown} />
       </Block>
     );
   };
 
   const renderServers = () => {
-    const connection = server || automatic
-
+    const connection = server || automatic;
     return (
       <Modal visible={show} animationType="fade" transparent>
-        <Block bottom gray>
+        <Block bottom color={rgba(COLORS.gray, 0.2)}>
           <Block flex={false} white middle padding={[SIZES.padding, 0]}>
-            <Text>Servers</Text>
+            <Text subtitle center gray>
+              Pick your Server
+            </Text>
+            <ScrollView>
+              {servers.map(item => {
+                const isConnected = connection.name === item.name;
+                const isChecked = icons[isConnected ? "checked" : "unchecked"];
+                return (
+                  <Button
+                    transparent
+                    key={`server-${item.name}`}
+                    onPress={() => handleServer(item)}
+                  >
+                    <Block
+                      flex={false}
+                      row
+                      center
+                      space="between"
+                      margin={[SIZES.padding, SIZES.padding]}
+                    >
+                      <Block flex={false} row center>
+                        <Image source={item.icon} />
+                        <Text padding={[0, SIZES.h3]}>{item.name}</Text>
+                      </Block>
+                      <Image source={isChecked} />
+                    </Block>
+                  </Button>
+                );
+              })}
+            </ScrollView>
           </Block>
         </Block>
       </Modal>
-    )
-  }
+    );
+  };
   return (
-    <Block safe center>
-      <Block flex={false} padding={[30, 0]}>
+    <Block safe center white>
+      <Block flex={false} padding={[50, 0]}>
         <Text title semibold>
           VPN
         </Text>
@@ -61,15 +96,15 @@ const VPN = () => {
           middle
           white
           shadow
-          radius={SIZES.base * 3}
+          radius={SIZES.radius}
           padding={[SIZES.base, SIZES.padding]}
         >
-          <Text subtitle semibold gray height={30}>
+          <Text theme={theme} subtitle semibold gray height={SIZES.h3}>
             {connected ? "Connected" : "Disconnected"}
           </Text>
           <Block
             flex={false}
-            radius={10}
+            radius={SIZES.base}
             color={connected ? COLORS.success : rgba(COLORS.gray, 0.5)}
             style={styles.status}
           />
@@ -81,8 +116,9 @@ const VPN = () => {
         />
 
         <Button
+          theme={theme}
           outlined={connected}
-          style={styles.connect}
+          style={[styles.connect, connected && styles.connected]}
           onPress={handleConnect}
         >
           <Text
@@ -98,8 +134,11 @@ const VPN = () => {
       </Block>
 
       <Block flex={false} middle white shadow style={{ width: "100%" }}>
-        <Button transparent>{renderServer()}</Button>
+        <Button transparent onPress={() => setShow(true)}>
+          {renderServer()}
+        </Button>
       </Block>
+      {renderServers()}
     </Block>
   );
 };
@@ -108,15 +147,28 @@ const styles = StyleSheet.create({
   connect: {
     width: SIZES.width / 2
   },
+  connected: {
+    borderColor: COLORS.black
+  },
   image: {
     width: 100,
     height: 100,
     marginVertical: 20
   },
   status: {
-    width: 8,
-    height: 8,
-    marginLeft: 10
+    width: SIZES.base,
+    height: SIZES.base,
+    marginLeft: SIZES.small
+  },
+  servers: {
+    width: SIZES.width,
+    height: SIZES.base * 9,
+    shadowOffset: {
+      width: 0,
+      height: -5
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: SIZES.base / 2
   }
 });
 
