@@ -1,5 +1,5 @@
 import images from './images';
 import theme from './theme';
-import server from './server';
+import servers from './server';
 
-export { images, theme, server };
+export { images, theme, servers };

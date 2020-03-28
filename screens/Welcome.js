@@ -1,12 +1,13 @@
 import React from "react";
-import { StyleSheet, ScrollView, Image } from "react-native";
+import { Animated, StyleSheet, ScrollView, Image } from "react-native";
 import { Block, Text, Button, Utils } from "expo-ui-kit";
 
 // constants
-import { background } from "../constants/images";
+import { images, theme } from "../constants";
+const { background } = images;
 
 // theme
-const { theme, rgba } = Utils;
+const { rgba } = Utils;
 const { SIZES, COLORS } = theme;
 
 const backgrounds = [
@@ -31,6 +32,8 @@ const backgrounds = [
 ];
 
 const Welcome = ({ navigation }) => {
+  const scrollX = new Animated.Value(0);
+
   const renderImages = () => (
     <ScrollView
       horizontal
@@ -40,6 +43,9 @@ const Welcome = ({ navigation }) => {
       scrollEventThrottle={16}
       snapToAlignment="center"
       showsHorizontalScrollIndicator={false}
+      onScroll={Animated.event([
+        { nativeEvent: { connectOffset: { x: scrollX } } }
+      ])}
     >
       {backgrounds.map((item, index) => (
         <Block
@@ -59,6 +65,7 @@ const Welcome = ({ navigation }) => {
   );
 
   const renderDots = () => {
+    const dotPosition = Animated.divide(scorllX, SIZES.width);
     return (
       <Block flex={false} row middle margin={[20, 0, 40, 0]}>
         <Block
@@ -101,8 +108,9 @@ const Welcome = ({ navigation }) => {
         </Text>
         {renderDots()}
         <Button
+          theme={theme}
           primary
-          style={{ borderRadius: 30 }}
+          // style={{ borderRadius: 30 }}
           onPress={() => navigation.navigate("VPN")}
         >
           <Text center white caption bold margin={[6, 26]}>

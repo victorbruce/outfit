@@ -1,6 +1,6 @@
 import { icons } from "./images";
 
-export default server = [
+const servers = [
   {
     name: "Automatic",
     icon: icons.automatic
@@ -10,7 +10,7 @@ export default server = [
     icon: icons.us
   },
   {
-    name: "Londom",
+    name: "London",
     icon: icons.uk
   },
   {
@@ -34,3 +34,5 @@ export default server = [
     icon: icons.singapore
   }
 ];
+
+export default servers;
