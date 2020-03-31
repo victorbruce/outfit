@@ -44,7 +44,7 @@ const Welcome = ({ navigation }) => {
       snapToAlignment="center"
       showsHorizontalScrollIndicator={false}
       onScroll={Animated.event([
-        { nativeEvent: { connectOffset: { x: scrollX } } }
+        { nativeEvent: { contentOffset: { x: scrollX } } }
       ])}
     >
       {backgrounds.map((item, index) => (
@@ -65,30 +65,34 @@ const Welcome = ({ navigation }) => {
   );
 
   const renderDots = () => {
-    const dotPosition = Animated.divide(scorllX, SIZES.width);
+    const dotPosition = Animated.divide(scrollX, SIZES.width);
     return (
-      <Block flex={false} row middle margin={[20, 0, 40, 0]}>
-        <Block
-          flex={false}
-          radius={8}
-          margin={[0, 5]}
-          color={rgba(COLORS.gray)}
-          style={{ width: 8, height: 8 }}
-        />
-        <Block
-          flex={false}
-          radius={8}
-          margin={[0, 5]}
-          color={rgba(COLORS.gray, 0.5)}
-          style={{ width: 8, height: 8 }}
-        />
-        <Block
-          flex={false}
-          radius={8}
-          margin={[0, 5]}
-          color={rgba(COLORS.gray, 0.5)}
-          style={{ width: 8, height: 8 }}
-        />
+      <Block
+        flex={false}
+        row
+        middle
+        margin={[SIZES.small, 0, SIZES.padding * 2, 0]}
+      >
+        {backgrounds.map((item, index) => {
+          const opacity = dotPosition.interpolate({
+            inputRange: [index - 1, index, index + 1],
+            outputRange: [0.3, 1, 0.3],
+            extrapolate: "clamp"
+          });
+
+          return (
+            <Block
+              gray
+              animated
+              flex={false}
+              key={`dot-${index}`}
+              radius={SIZES.small}
+              margin={[0, SIZES.small / 2]}
+              color={rgba(COLORS.gray)}
+              style={[styles.dot, { opacity }]}
+            />
+          );
+        })}
       </Block>
     );
   };
@@ -99,21 +103,29 @@ const Welcome = ({ navigation }) => {
         {renderImages()}
       </Block>
       <Block flex={false} center bottom margin={60}>
-        <Text h3 semibold>
+        <Text h3 semibold theme={theme}>
           Secured, forever.
         </Text>
-        <Text center caption gray margin={[10, 0]}>
+        <Text center caption gray margin={[SIZES.small, 0]}>
           Curabitur lobortis id lorem id bibendum. Ut id consectetur magna.
           Quisque volutpat augue enim, pulvinar lobortis.
         </Text>
+
         {renderDots()}
+
         <Button
           theme={theme}
           primary
           // style={{ borderRadius: 30 }}
           onPress={() => navigation.navigate("VPN")}
         >
-          <Text center white caption bold margin={[6, 26]}>
+          <Text
+            center
+            white
+            caption
+            bold
+            margin={[SIZES.padding / 2, SIZES.padding * 2]}
+          >
             GET STARTED
           </Text>
         </Button>
@@ -125,7 +137,8 @@ const Welcome = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "white"
-  }
+  },
+  dot: { width: SIZES.base, height: SIZES.base }
 });
 
 export default Welcome;
