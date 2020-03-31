@@ -5,7 +5,7 @@ const theme = {
     // base colors
     primary: "#0094FC",
     // color variations
-    gray: "#5353453"
+    gray: "#535345"
   },
   SIZES: {
     // global sizes
